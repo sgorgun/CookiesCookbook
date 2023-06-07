@@ -20,5 +20,9 @@ public class CookiesRecipesApp
     public void Run()
     {
         throw new NotImplementedException();
+
+        Console.WriteLine("Hi!");
     }
+
+    
 }
