@@ -31,7 +31,7 @@ public class CookiesRecipesApp
         {
             var recepes = new Recipy(ingredients); // Using ingrediens for creating recipe.
             allRecipes.Add(recepe); // Add recepe in recipes list.
-            _recpesRepository.Write(filePath, allRecipes) // Write recipes to file.
+            _recpesRepository.Write(filePath, allRecipes); // Write recipes to file.
             _recpesUserInteraction.ShowMessage("Recipe added."); //Show messade about adding.
             _recpesUserInteraction.ShowMessage(recepe.ToString()); // Show recepe.
         }
