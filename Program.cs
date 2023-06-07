@@ -40,6 +40,6 @@ public class CookiesRecipesApp
             _recpesUserInteraction.SowMessage("No ingredients has been selected. Recipe will not be saved.");
         }
 
-        _recpesUserInteraction.Exit();       
+        _recpesUserInteraction.Exit(); //Exit       
     }   
 }
