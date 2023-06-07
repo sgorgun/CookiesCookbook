@@ -37,7 +37,7 @@ public class CookiesRecipesApp
         }
         else // Message if recepies are not added.
         {
-            _recpesUserInteraction.SowMessage("No ingredients has been selected. Recipe will not be saved.")
+            _recpesUserInteraction.SowMessage("No ingredients has been selected. Recipe will not be saved.");
         }
 
         _recpesUserInteraction.Exit();       
