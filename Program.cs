@@ -361,48 +361,62 @@ public interface IStringsRepository
 }
 
 /// <summary>
-/// read/write recepies from/to text file.
+/// Template pattern! Read/write recepies.
 /// </summary>
-public class StringsTextualRepository : IStringsRepository
+public abstract class StringsRepository : IStringsRepository
 {
-    private static readonly string Separator = Environment.NewLine;
-
-
     public List<string> Read(string filePath)
     {
         if (File.Exists(filePath))
         {
             var fileContents = File.ReadAllText(filePath);
-            return fileContents.Split(Separator).ToList(); 
+            return TextToStrings(fileContents);
         }
 
         return new List<string>();
     }
 
+    protected abstract List<string> TextToStrings(string fileContents);
+
     public void Write(string filePath, List<string> strings)
     {
-        File.WriteAllText(filePath, string.Join(Separator, strings));
+        File.WriteAllText(filePath, StringsToText(strings));
+    }
+
+    protected abstract string StringsToText(List<string> strings);
+}
+
+
+/// <summary>
+/// read/write recepies from/to text file.
+/// </summary>
+public class StringsTextualRepository : StringsRepository
+{
+    private static readonly string Separator = Environment.NewLine;
+
+    protected override string StringsToText(List<string> strings)
+    {
+        return string.Join(Separator, strings);
+    }
+
+    protected override List<string> TextToStrings(string fileContents)
+    {
+        return fileContents.Split(Separator).ToList();
     }
 }
 
 /// <summary>
 /// read/write recepies from/to Json file.
 /// </summary>
-public class StringsJsonRepository : IStringsRepository
+public class StringsJsonRepository : StringsRepository
 {
-    public List<string> Read(string filePath)
+    protected override string StringsToText(List<string> strings)
     {
-        if (File.Exists(filePath))
-        {
-            var fileContents = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<List<string>>(fileContents);
-        }
-
-        return new List<string>();
+        return JsonSerializer.Serialize(strings);
     }
 
-    public void Write(string filePath, List<string> strings)
+    protected override List<string> TextToStrings(string fileContents)
     {
-        File.WriteAllText(filePath, JsonSerializer.Serialize(strings));
+        return JsonSerializer.Deserialize<List<string>>(fileContents);
     }
 }
