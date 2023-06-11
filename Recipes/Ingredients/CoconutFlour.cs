@@ -1,8 +1,7 @@
-﻿namespace CookiesCookbook.Recipes.Ingredients
+﻿namespace CookiesCookbook.Recipes.Ingredients;
+
+public class CoconutFlour : Flour
 {
-    public class CoconutFlour : Flour
-    {
-        public override int Id => 2;
-        public override string Name => "Coconut flour";
-    }
+    public override int Id => 2;
+    public override string Name => "Coconut flour";
 }

@@ -1,9 +1,8 @@
-﻿namespace CookiesCookbook.Recipes.Ingredients
+﻿namespace CookiesCookbook.Recipes.Ingredients;
+
+public class Butter : Ingredient
 {
-    public class Butter : Ingredient
-    {
-        public override int Id => 3;
-        public override string Name => "Butter";
-        public override string PreparationInstructions => $"Melt on lowheat. {base.PreparationInstructions}";
-    }
+    public override int Id => 3;
+    public override string Name => "Butter";
+    public override string PreparationInstructions => $"Melt on lowheat. {base.PreparationInstructions}";
 }
