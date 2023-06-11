@@ -1,15 +1,58 @@
 ﻿using CookiesCookbook.Recipes;
 using CookiesCookbook.Recipes.Ingredients;
-using System.Xml.Linq;
+using System.Text.Json;
+
+const FileFormat Format = FileFormat.Txt;
+
+IStringsRepository stringsRepository = Format == FileFormat.Json ?
+    new StringsJsonRepository() :
+    new StringsTextualRepository();
+
+const string Filename = "recipes";
+var fileMetadata = new FileMetadata(Filename, Format);
 
 var ingredientsRegister = new IngredientsRegister();
 
 var cookiesRecipesApp = new CookiesRecipesApp(
-    new RecipesRepository(
-        new StringTextualRepository(), ingredientsRegister),
+    new RecipesRepository(stringsRepository, ingredientsRegister),
     new RecipesConsoleUserInteraction(ingredientsRegister)); // Create an instance of the class using the constructor below. The way to communicate with user. In the future we can change it.
 
-cookiesRecipesApp.Run("recipes.txt");
+cookiesRecipesApp.Run(fileMetadata.ToPath()); // File name for storing recipes.
+
+/// <summary>
+/// Build a file path from the file's name and the file gotmat enum.
+/// </summary>
+public class FileMetadata
+{
+    public string Name { get; set; }
+
+    public FileFormat Format { get; }
+
+    public FileMetadata(string name, FileFormat format)
+    {
+        Name = name;
+        Format = format;
+    }
+
+    public string ToPath() => $"{Name}.{Format.AsFileExtension()}";
+}
+/// <summary>
+/// File format extension.
+/// </summary>
+public static class FileFormatExtensions
+{
+    public static string AsFileExtension(this FileFormat fileFormat) =>
+        fileFormat == FileFormat.Json ? "json" : "txt";
+}
+
+/// <summary>
+/// File formats for the saving recipes.
+/// </summary>
+public enum FileFormat
+{
+    Json,
+    Txt
+}
 
 public class CookiesRecipesApp
 {
@@ -318,9 +361,9 @@ public interface IStringsRepository
 }
 
 /// <summary>
-/// write recepies to text file.
+/// read/write recepies from/to text file.
 /// </summary>
-public class StringTextualRepository : IStringsRepository
+public class StringsTextualRepository : IStringsRepository
 {
     private static readonly string Separator = Environment.NewLine;
 
@@ -339,5 +382,27 @@ public class StringTextualRepository : IStringsRepository
     public void Write(string filePath, List<string> strings)
     {
         File.WriteAllText(filePath, string.Join(Separator, strings));
+    }
+}
+
+/// <summary>
+/// read/write recepies from/to Json file.
+/// </summary>
+public class StringsJsonRepository : IStringsRepository
+{
+    public List<string> Read(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            var fileContents = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<List<string>>(fileContents);
+        }
+
+        return new List<string>();
+    }
+
+    public void Write(string filePath, List<string> strings)
+    {
+        File.WriteAllText(filePath, JsonSerializer.Serialize(strings));
     }
 }
